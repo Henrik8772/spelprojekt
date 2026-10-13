@@ -56,7 +56,7 @@ class Normal_Guy(Hero):
         super().__init__(bonus_hp, bonus_atk, hero_type, true_name)
         self.One_Above_All()
 
-    def One_Above_All(self, activation_chance=0.5, passive_dmg=200):
+    def One_Above_All(self, activation_chance=0.1, passive_dmg=200):
         self.activation_chance = activation_chance
         self.passive_dmg = passive_dmg
 
@@ -72,8 +72,12 @@ class Player:
 class Monster:
     def __init__(self, hp=200, dmg=5, name=""):
         self.name = name
+        self.max_hp = hp
         self.hp = hp
         self.dmg = dmg
+
+    def reset(self):
+        self.hp = self.max_hp
 
 
 class Goblin(Monster):
@@ -163,32 +167,40 @@ def game():
                     choice = input("What do you wanna do?: ").lower()
 
                     if choice in ("1", "adventure"):
+                        goblin = Goblin()
                         print(f"You stumbled upon a {goblin.name}")
                         while True:
                             print(f"It has {goblin.hp} Hp")
 
                             action = input(
                                 "What do you do (attack, run, heal)?: ").lower()
-                            if action == "attack":
+                            if action in ("attack", "a"):
                                 damage = player.base_atk + player.type.bonus_atk
                                 goblin.hp -= damage
                                 print(
-                                    f"You dealt {damage} dmg to the {goblin.name}!")
+                                    f"You dealt {damage} dmg to the {goblin.name}!\n")
                                 if isinstance(player.type, Normal_Guy):
                                     if random.random() <= player.type.activation_chance:
                                         goblin.hp -= player.type.passive_dmg
                                         print(
-                                            f"Your passive has activated, One Above All deals an extra {player.type.passive_dmg} dmg to the {goblin.name}!!")
-                                        continue
+                                            f"Your passive has activated, One Above All deals an extra {player.type.passive_dmg} dmg to the {goblin.name}!!\n")
                                     else:
-                                        print("Passive failed to activate")
-                                        continue
-                                if goblin.hp <= 0:
-                                    print(
-                                        f"\nYou defeated the {goblin.name}!!")
+                                        print("Passive failed to activate\n")
 
-                                else:
+                            if goblin.hp <= 0:
+                                goblin.reset()
+                                print(
+                                    f"\nYou defeated the {goblin.name}!!")
+                                again = input(
+                                    "Wanna continue adventuring? (y/n): ")
+                                if again in ("yes", "y"):
                                     continue
+                                elif again not in ("yes", "y"):
+                                    break
+
+                            elif goblin.hp > 0:
+
+                                continue
 
                     elif choice in ("2", "inventory"):
                         print("inventory")
