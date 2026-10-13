@@ -48,6 +48,12 @@ class Elemental_Brawler(Hero):
         print(self.hero_type, "Berserker")
 
 
+class Normal_Guy(Hero):
+    def __init__(self, bonus_hp=0, bonus_atk=0, hero_type="Normal_Guy", true_name="One above all"):
+
+        super().__init__(bonus_hp, bonus_atk, hero_type, true_name)
+
+
 class Player:
     def __init__(self, name="", type=Hero):
         self.type = type
@@ -60,6 +66,7 @@ master_swordsmen = Master_Swordsmen()
 highclass_tanker = Highclass_Tanker()
 spirit_archer = Spirit_Archer()
 elemental_brawler = Elemental_Brawler()
+normal_guy = Normal_Guy()
 
 
 heros = [master_swordsmen, highclass_tanker, spirit_archer, elemental_brawler]
@@ -92,19 +99,27 @@ def game():
         print(f"Hero type: {elemental_brawler.hero_type}")
         print(f"Hero true name: {elemental_brawler.get_truename()}\n")
 
-        choose_hero = int(input("Choose 1, 2, 3 or 4: "))
+        choose_hero = input("Choose 1, 2, 3 or 4: ")
 
-        if choose_hero == 1:
-            player.type = master_swordsmen
+        if choose_hero != "none":
 
-        elif choose_hero == 2:
-            player.type = highclass_tanker
+            if choose_hero == "1":
+                player.type = master_swordsmen
 
-        elif choose_hero == 3:
-            player.type = spirit_archer
+            elif choose_hero == "2":
+                player.type = highclass_tanker
 
-        elif choose_hero == 4:
-            player.type = elemental_brawler
+            elif choose_hero == "3":
+                player.type = spirit_archer
+
+            elif choose_hero == "4":
+                player.type = elemental_brawler
+
+        elif choose_hero == "none":
+            player.type = normal_guy
+
+        if player.type != None:
+            print(f"Your choosen Hero class is {player.type.hero_type}")
 
 
 game()
