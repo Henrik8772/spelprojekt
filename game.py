@@ -1,3 +1,5 @@
+from random import randint
+import random
 
 
 class Hero:
@@ -53,6 +55,10 @@ class Normal_Guy(Hero):
 
         super().__init__(bonus_hp, bonus_atk, hero_type, true_name)
 
+    def One_Above_All(self, activation_chance=0.5, passive_dmg=200):
+        self.activation_chance = activation_chance
+        self.passive_dmg = passive_dmg
+
 
 class Player:
     def __init__(self, name="", type=Hero):
@@ -62,11 +68,26 @@ class Player:
         self.base_atk = 10
 
 
+class Monster:
+    def __init__(self, hp=200, dmg=5, name=""):
+        self.name = name
+        self.hp = hp
+        self.dmg = dmg
+
+
+class Goblin(Monster):
+    def __init__(self, hp=200, dmg=5, name="Goblin"):
+
+        super().__init__(hp, dmg, name)
+
+
 master_swordsmen = Master_Swordsmen()
 highclass_tanker = Highclass_Tanker()
 spirit_archer = Spirit_Archer()
 elemental_brawler = Elemental_Brawler()
 normal_guy = Normal_Guy()
+
+goblin = Goblin()
 
 
 heros = [master_swordsmen, highclass_tanker, spirit_archer, elemental_brawler]
@@ -75,13 +96,15 @@ player = None
 
 
 def game():
-    start_game = input("Do you wanna start a new adventure? (y/n): ").lower()
-    player_name = input("NOW CHOOSE YOUR HEROS NAME!!!: ")
-    player = Player(player_name)
+    start_game = input(
+        "Do you wanna start a new adventure? (y/n): ").lower()
 
     while True:
         if start_game not in ("yes", "y"):
             break
+
+        player_name = input("NOW CHOOSE YOUR HEROS NAME!!!: ")
+        player = Player(player_name)
 
         print(f"WELCOME {player.name} TO RPG WORLD!!!\n")
 
@@ -119,7 +142,53 @@ def game():
             player.type = normal_guy
 
         if player.type != None:
-            print(f"Your choosen Hero class is {player.type.hero_type}")
+            print(f"Your choosen Hero class is {player.type.hero_type} \n")
+
+        while True:
+            adventure = input(
+                "Are you ready to begin your journey? (y/n): ").lower()
+
+            if adventure not in ("yes", "y"):
+                break
+
+            elif adventure in ("yes", "y"):
+                while True:
+
+                    print("1. Adventure")
+                    print("2. Inventory")
+                    print("3. Shop")
+                    print("4. Exit Game")
+
+                    choice = input("What do you wanna do?: ").lower()
+
+                    if choice in ("1", "adventure"):
+                        print(f"You stumbled upon a {goblin.name}")
+                        while True:
+                            print(f"It has {goblin.hp} Hp")
+
+                            action = input(
+                                "What do you do (attack, run, heal)?: ").lower()
+                            if action == "attack":
+                                goblin.hp -= player.base_atk + player.type.bonus_atk
+                                if player.type == normal_guy:
+                                    if random.random() > normal_guy.activation_chance:
+                                        continue
+                                    elif random.random() <= normal_guy.activation_chance:
+                                        goblin.hp -= normal_guy.passive_dmg
+                                        continue
+
+                    elif choice in ("2", "inventory"):
+                        print("inventory")
+
+                    elif choice in ("3", "shop"):
+                        print("shop")
+
+                    elif choice in ("4", "exit", "exit game"):
+                        break
+
+                    else:
+                        print("Invalid Action")
+                        continue
 
 
 game()
