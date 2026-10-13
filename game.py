@@ -54,6 +54,7 @@ class Normal_Guy(Hero):
     def __init__(self, bonus_hp=0, bonus_atk=0, hero_type="Normal_Guy", true_name="One above all"):
 
         super().__init__(bonus_hp, bonus_atk, hero_type, true_name)
+        self.One_Above_All()
 
     def One_Above_All(self, activation_chance=0.5, passive_dmg=200):
         self.activation_chance = activation_chance
@@ -169,13 +170,25 @@ def game():
                             action = input(
                                 "What do you do (attack, run, heal)?: ").lower()
                             if action == "attack":
-                                goblin.hp -= player.base_atk + player.type.bonus_atk
-                                if player.type == normal_guy:
-                                    if random.random() > normal_guy.activation_chance:
+                                damage = player.base_atk + player.type.bonus_atk
+                                goblin.hp -= damage
+                                print(
+                                    f"You dealt {damage} dmg to the {goblin.name}!")
+                                if isinstance(player.type, Normal_Guy):
+                                    if random.random() <= player.type.activation_chance:
+                                        goblin.hp -= player.type.passive_dmg
+                                        print(
+                                            f"Your passive has activated, One Above All deals an extra {player.type.passive_dmg} dmg to the {goblin.name}!!")
                                         continue
-                                    elif random.random() <= normal_guy.activation_chance:
-                                        goblin.hp -= normal_guy.passive_dmg
+                                    else:
+                                        print("Passive failed to activate")
                                         continue
+                                if goblin.hp <= 0:
+                                    print(
+                                        f"\nYou defeated the {goblin.name}!!")
+
+                                else:
+                                    continue
 
                     elif choice in ("2", "inventory"):
                         print("inventory")
